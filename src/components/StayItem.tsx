@@ -43,7 +43,7 @@ export default function StayItem({
                   numberOfMonths={1}
                   start={stays?.[key]?.start}
                   end={stays?.[key]?.end}
-                  className="min-w-[210px]"
+                  className="min-w-[210px] w-fit"
                 />
               </TableCell>
               <TableCell className="p-2">{stays?.[key]?.days ?? 'Error'}</TableCell>
