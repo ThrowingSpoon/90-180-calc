@@ -69,7 +69,7 @@ export default function Calculator() {
       }
 
       let fullOverlaps: Stays = {};
-      const partialOverlaps: Stays = {};
+      // const partialOverlaps: Stays = {};
 
       const date180Ago = subDays(currStay.start, 7);
 
@@ -108,7 +108,7 @@ export default function Calculator() {
   return (
     <div className="w-full mx-2">
       <div>
-        <div className="flex flex-1 flex-row">
+        <div className="flex flex-1 flex-row mb-3">
           <Button onClick={addAStay} className="mr-6">
             Add a stay
             <PlusCircleIcon className="ml-2" />

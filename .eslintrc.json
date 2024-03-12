@@ -58,7 +58,7 @@
     "react-hooks/exhaustive-deps": "warn",
     "import/prefer-default-export": "off",
     "jsx-a11y/label-has-associated-control": "off",
-    "max-len": ["error", { "code": 120 }]
+    "max-len": ["error", { "code": 130 }]
   },
   "settings": {
     "import/resolver": {

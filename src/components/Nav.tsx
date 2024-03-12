@@ -2,6 +2,7 @@ import {
   CalendarIcon,
   HomeIcon,
   MenuIcon,
+  MessageCircleQuestionIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 import { ReactNode } from 'react';
@@ -25,6 +26,11 @@ export const links: NavLink[] = [
     text: 'Calculator',
     icon: <CalendarIcon />,
     url: '/calculator',
+  },
+  {
+    text: 'FAQ',
+    icon: <MessageCircleQuestionIcon />,
+    url: '/faq',
   },
 ];
 

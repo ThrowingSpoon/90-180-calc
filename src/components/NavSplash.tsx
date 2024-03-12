@@ -13,7 +13,7 @@ export default function NavSplash() {
       {links.filter((l) => l.text.toLocaleLowerCase() !== 'home').map((link: NavLink) => (
         <Card
           key={link.text}
-          className="bg-slate-200 dark:bg-slate-800 hover:dark:bg-slate-600 hover:bg-slate-400"
+          className="bg-slate-200 dark:bg-slate-800 hover:dark:bg-slate-600 hover:bg-slate-400 mx-3"
         >
           <Link href={link.url}>
             <CardContent>
