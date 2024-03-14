@@ -1,4 +1,7 @@
-import { isAfter, isBefore, isEqual } from 'date-fns';
+import {
+  differenceInDays, isAfter, isBefore, isEqual,
+  subDays,
+} from 'date-fns';
 
 export function isBeforeOrEqual(
   date: Date,
@@ -29,3 +32,40 @@ export const doesOverlap = (aFrom: Date, aTo: Date, bFrom: Date, bTo: Date) => !
   (isBeforeOrEqual(aFrom, bFrom) || isAfterOrEqual(aFrom, bTo))
   && (isBeforeOrEqual(aTo, bFrom) || isAfterOrEqual(aTo, bTo))
 );
+
+export const calcDaysInLastX = (calcFrom: Date, stays: { from: Date, to: Date }[], lastXDays: number = 180): number => {
+  if (lastXDays <= 0) throw new Error('lastXDays must be greater than 0');
+  if (stays.length === 0) return 0;
+
+  let totalDays = 0;
+  const cutoffDate = subDays(calcFrom, lastXDays);
+
+  // for each stay, check whether the from date is before the cutoffDate, then add it to the
+  // running total, if the cutoffDate is between the stay from and to, only add number of days that overlap
+  //
+  // key:
+  // * C is the cutoff date
+  // * each - is a day
+  // * | is the calcFrom date
+  //
+  // The date directly below C adds 6 days, other days are whole, and add all of their days
+  //
+  // ----------C-----------------------------------------------------------|--------------------
+  // ----[-----6-----]--------------------------------------------------------------------------
+  // --------------------[-----12-----]---------------------------------------------------------
+  // ------------------------------------------------------[--5--]------------------------------
+  // -------------------------------------------------------------------------------------------
+  stays.forEach((stay) => {
+    // if cuttoffDate is before both the from and to of the stay, add the whole stay
+    if (isAfterOrEqual(stay.from, cutoffDate) && isAfterOrEqual(stay.to, cutoffDate)) {
+      const daysToAdd = differenceInDays(stay.to, stay.from) + 1;
+      totalDays += daysToAdd;
+    } else if (isAfterOrEqual(cutoffDate, stay.from) && isBeforeOrEqual(cutoffDate, stay.to)) {
+      // if cutoffDate is between the from and to, add only the number of days until the to date, rounded up
+      const daysToAdd = differenceInDays(stay.to, cutoffDate) + 1;
+      totalDays += daysToAdd;
+    }
+  });
+
+  return totalDays;
+};
