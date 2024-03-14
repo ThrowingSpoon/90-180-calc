@@ -2,6 +2,7 @@ import {
   differenceInDays, isAfter, isBefore, isEqual,
   subDays,
 } from 'date-fns';
+import { Stays } from './types';
 
 export function isBeforeOrEqual(
   date: Date,
@@ -68,4 +69,20 @@ export const calcDaysInLastX = (calcFrom: Date, stays: { from: Date, to: Date }[
   });
 
   return totalDays;
+};
+
+/**
+ * Sort rate ranges by 'from' date
+ *
+ * @param dates the date ranges to sort
+ * @returns dates sorted by from date
+ */
+export const sortDates = (dates: { from: Date, to: Date }[]): { from: Date, to: Date }[] => {
+  const filteredDates = dates.sort((a, b) => {
+    if (isAfter(a.from, b.from)) return 1;
+    if (isBefore(a.from, b.from)) return -1;
+    return 0;
+  });
+
+  return filteredDates;
 };

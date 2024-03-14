@@ -1,7 +1,10 @@
+/* eslint-disable no-console */
 import {
   describe, expect, it,
 } from 'vitest';
-import { calcDaysInLastX, doesOverlap } from '@/lib/helpers';
+import {
+  calcDaysInLastX, doesOverlap, sortDates,
+} from '@/lib/helpers';
 
 /**
  * Test date overlap logic
@@ -61,5 +64,27 @@ describe('date calulations', () => {
     const calcFrom = new Date(2024, 0, 30);
     const totalDays = calcDaysInLastX(calcFrom, stays, 25);
     expect(totalDays).toEqual(14);
+  });
+});
+
+describe('date sorting', () => {
+  it('should sort dates by "from" value', () => {
+    const dates = [
+      { from: new Date(2024, 0, 22), to: new Date(2024, 0, 23) },
+      { from: new Date(2024, 0, 1), to: new Date(2024, 0, 10) },
+      { from: new Date(2024, 0, 15), to: new Date(2024, 0, 20) },
+    ];
+
+    const filteredDates = sortDates(dates);
+
+    expect(filteredDates[0].from).toEqual(new Date(2024, 0, 1));
+    expect(filteredDates[1].from).toEqual(new Date(2024, 0, 15));
+    expect(filteredDates[2].from).toEqual(new Date(2024, 0, 22));
+  });
+});
+
+describe('sandbox', () => {
+  it('sandbox', () => {
+
   });
 });
