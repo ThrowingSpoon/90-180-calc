@@ -2,7 +2,7 @@ import {
   differenceInDays, isAfter, isBefore, isEqual,
   subDays,
 } from 'date-fns';
-import { Stays } from './types';
+import { Stay, Stays } from './types';
 
 export function isBeforeOrEqual(
   date: Date,
@@ -85,4 +85,22 @@ export const sortDates = (dates: { from: Date, to: Date }[]): { from: Date, to: 
   });
 
   return filteredDates;
+};
+
+export const sortStays = (stays: Stays): Stays => {
+  const sortedStays: Stays = {};
+  const stayValues = Object.values(stays);
+
+  stayValues.sort((a, b) => {
+    if (a.start == null || a.end == null || b.start == null || b.end == null) return -1;
+    if (isAfter(a.start, b.start)) return 1;
+    if (isBefore(a.start, b.start)) return -1;
+    return 0;
+  });
+
+  stayValues.forEach((stay: Stay) => {
+    sortedStays[stay.stayId] = stay;
+  });
+
+  return sortedStays;
 };

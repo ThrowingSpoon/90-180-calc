@@ -4,7 +4,9 @@ import {
 } from 'vitest';
 import {
   calcDaysInLastX, doesOverlap, sortDates,
+  sortStays,
 } from '@/lib/helpers';
+import { Stays } from './types';
 
 /**
  * Test date overlap logic
@@ -80,6 +82,51 @@ describe('date sorting', () => {
     expect(filteredDates[0].from).toEqual(new Date(2024, 0, 1));
     expect(filteredDates[1].from).toEqual(new Date(2024, 0, 15));
     expect(filteredDates[2].from).toEqual(new Date(2024, 0, 22));
+  });
+
+  it('should sort stays by "start" value', () => {
+    const stays: Stays = {
+      a: {
+        stayId: 'a',
+        start: new Date(2024, 0, 22),
+        end: new Date(2024, 0, 23),
+        days: 0,
+        daysInLast180: 0,
+        error: '',
+      },
+      b: {
+        stayId: 'b',
+        start: new Date(2024, 0, 1),
+        end: new Date(2024, 0, 10),
+        days: 0,
+        daysInLast180: 0,
+        error: '',
+      },
+      c: {
+        stayId: 'c',
+        start: new Date(2024, 0, 15),
+        end: new Date(2024, 0, 20),
+        days: 0,
+        daysInLast180: 0,
+        error: '',
+      },
+      d: {
+        stayId: 'd',
+        start: undefined,
+        end: undefined,
+        days: 0,
+        daysInLast180: 0,
+        error: '',
+      },
+    };
+
+    const sortedStays = sortStays(stays);
+    const keys = Object.keys(sortedStays);
+
+    expect(keys[0]).toEqual('d');
+    expect(keys[1]).toEqual('b');
+    expect(keys[2]).toEqual('c');
+    expect(keys[3]).toEqual('a');
   });
 });
 
