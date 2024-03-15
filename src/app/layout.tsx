@@ -33,7 +33,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <div className="flex m-4">
             <Nav />
           </div>
-          <div className="flex flex-1 mx-auto xs:w-11/12 lg:w-3/5">
+          <div className="mx-auto w-11/12 md:w-9/12 lg:w-7/12">
             {children}
           </div>
           <Toaster />

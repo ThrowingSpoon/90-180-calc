@@ -70,7 +70,7 @@ function Nav() {
 
       <div className="flex-grow text-center">
         <div className="h-full flex justify-center items-center text-xl md:text-2xl lg:text-3xl">
-          <Link href="/">90-180 day calculator</Link>
+          <Link href="/">90-180 Day Calculator</Link>
         </div>
       </div>
       <ThemeToggle />

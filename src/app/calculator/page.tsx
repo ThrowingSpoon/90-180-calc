@@ -8,13 +8,15 @@ import {
   isBefore,
   subDays,
 } from 'date-fns';
-import { PlusCircleIcon, XIcon } from 'lucide-react';
+import { PlusCircleIcon } from 'lucide-react';
 import { DateRange } from 'react-day-picker';
 import useLocalStorageState from 'use-local-storage-state';
 import { v4 } from 'uuid';
 import { Stays } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import StayItem from '@/components/StayItem';
+import StayTable from '@/components/StayTable';
+import { Toolbox } from './Toolbox';
+import { sortStays } from '../../lib/helpers';
 
 export default function Calculator() {
   const [stays, setStays] = useLocalStorageState<Stays>('stays');
@@ -34,8 +36,12 @@ export default function Calculator() {
     });
   };
 
-  const deleteAllStays = () => {
+  const onDeleteAllStays = () => {
     setStays({});
+  };
+
+  const onSortStays = () => {
+    setStays(sortStays(stays ?? {}));
   };
 
   const dateRangeSelected = (dateRange: DateRange | undefined, id: string) => {
@@ -106,25 +112,18 @@ export default function Calculator() {
   };
 
   return (
-    <div className="w-full mx-2">
-      <div>
-        <div className="flex flex-1 flex-row mb-3">
-          <Button onClick={addAStay} className="mr-6">
-            Add a stay
-            <PlusCircleIcon className="ml-2" />
-          </Button>
-          <Button
-            className="ml-auto"
-            variant="destructive"
-            onClick={deleteAllStays}
-          >
-            Delete all stays
-            <XIcon className="ml-2" />
-          </Button>
+    <div>
+      <div className="flex flex-1 flex-row mb-3">
+        <Button onClick={addAStay} className="mr-6" variant="outline">
+          Add a stay
+          <PlusCircleIcon className="ml-2" />
+        </Button>
+        <div className="ml-auto">
+          <Toolbox onDeleteAllStays={onDeleteAllStays} onSortStays={onSortStays} />
         </div>
       </div>
       <div>
-        <StayItem onDateRangeSelected={dateRangeSelected} stays={stays ?? {}} />
+        <StayTable onDateRangeSelected={dateRangeSelected} stays={stays ?? {}} />
       </div>
     </div>
   );
