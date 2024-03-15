@@ -75,7 +75,7 @@ export const calcDaysInLastX = (calcFrom: Date, stays: { from: Date, to: Date }[
  * Sort rate ranges by 'from' date
  *
  * @param dates the date ranges to sort
- * @returns dates sorted by from date
+ * @returns dates sorted by 'from' date
  */
 export const sortDates = (dates: { from: Date, to: Date }[]): { from: Date, to: Date }[] => {
   const filteredDates = dates.sort((a, b) => {
@@ -87,6 +87,12 @@ export const sortDates = (dates: { from: Date, to: Date }[]): { from: Date, to: 
   return filteredDates;
 };
 
+/**
+ * sort custom stay types by their 'start' date, undefined dates are kept at the beginning
+ *
+ * @param stays the stays to sort
+ * @returns stays sorted by 'start' date, undefined dates are kept at the beginning
+ */
 export const sortStays = (stays: Stays): Stays => {
   const sortedStays: Stays = {};
   const stayValues = Object.values(stays);
