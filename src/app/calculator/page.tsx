@@ -44,6 +44,12 @@ export default function Calculator() {
     setStays(sortStays(stays ?? {}));
   };
 
+  const onDeleteStay = (id: string) => {
+    const tempStays = { ...stays };
+    delete tempStays[id];
+    setStays(tempStays);
+  };
+
   const dateRangeSelected = (dateRange: DateRange | undefined, id: string) => {
     const tempStays = stays ?? {};
     const tempStay = stays?.[id];
@@ -123,7 +129,7 @@ export default function Calculator() {
         </div>
       </div>
       <div>
-        <StayTable onDateRangeSelected={dateRangeSelected} stays={stays ?? {}} />
+        <StayTable onDateRangeSelected={dateRangeSelected} stays={stays ?? {}} onDeleteStay={onDeleteStay} />
       </div>
     </div>
   );
