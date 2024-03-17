@@ -82,7 +82,6 @@ export default function Calculator() {
         currStay.end,
         allDates,
         180,
-        currStay.stayId === 'd88ce714-5ad0-4e55-b826-21fb9456ae9c',
       );
 
       tempStays[currStay.stayId] = { ...temp };
