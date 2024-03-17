@@ -15,11 +15,12 @@ import {
 import { Stays } from '@/lib/types';
 import { DatePickerWithRange } from './DatePicker';
 import { Button } from './ui/button';
+import { cn } from '../lib/utils';
 
 type StayTableProps = {
   stays: Stays;
   onDateRangeSelected: (dateRange: DateRange | undefined, id: string) => void;
-  onDeleteStay: (id: string) => void
+  onDeleteStay: (id: string) => void;
 };
 
 export default function StayTable({
@@ -35,7 +36,7 @@ export default function StayTable({
           <TableHead className="p-3">Days</TableHead>
           <TableHead className="p-3">Last 180</TableHead>
           <TableHead className="p-3">Delete</TableHead>
-          <TableHead className="p-3">Error</TableHead>
+          {/* <TableHead className="p-3">Error</TableHead> */}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -51,14 +52,34 @@ export default function StayTable({
                 promptClassName="min-w-[250px] w-fit"
               />
             </TableCell>
-            <TableCell className="p-2">{stays?.[key]?.days ?? 'Error'}</TableCell>
-            <TableCell className="p-2">{stays?.[key]?.daysInLast180 ?? 'Error'}</TableCell>
             <TableCell className="p-2">
-              <Button variant="ghost" onClick={() => { onDeleteStay(key); }}>
+              {stays?.[key]?.days ?? 'Error'}
+            </TableCell>
+            <TableCell
+              className={cn(
+                'p-2',
+                stays[key].daysInLast180 > 90
+                  ? 'text-3xl text-red-500'
+                  : '',
+              )}
+            >
+              {stays?.[key]?.daysInLast180 ?? 'Error'}
+            </TableCell>
+            <TableCell className="p-2">
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  onDeleteStay(key);
+                }}
+              >
                 <TrashIcon size={20} />
               </Button>
             </TableCell>
-            <TableCell className="p-2 text-red-500">{stays?.[key]?.error ?? ''}</TableCell>
+            {stays?.[key]?.error && (
+              <TableCell className="p-2 text-red-500">
+                {stays?.[key]?.error ?? ''}
+              </TableCell>
+            )}
           </TableRow>
         ))}
       </TableBody>

@@ -34,7 +34,11 @@ export const doesOverlap = (aFrom: Date, aTo: Date, bFrom: Date, bTo: Date) => !
   && (isBeforeOrEqual(aTo, bFrom) || isAfterOrEqual(aTo, bTo))
 );
 
-export const calcDaysInLastX = (calcFrom: Date, stays: { from: Date, to: Date }[], lastXDays: number = 180): number => {
+export const calcDaysInLastX = (
+  calcFrom: Date,
+  stays: { from: Date, to: Date }[],
+  lastXDays: number = 180,
+): number => {
   if (lastXDays <= 0) throw new Error('lastXDays must be greater than 0');
   if (stays.length === 0) return 0;
 
@@ -57,8 +61,10 @@ export const calcDaysInLastX = (calcFrom: Date, stays: { from: Date, to: Date }[
   // ------------------------------------------------------[--5--]------------------------------
   // -------------------------------------------------------------------------------------------
   stays.forEach((stay) => {
-    // if cuttoffDate is before both the from and to of the stay, add the whole stay
-    if (isAfterOrEqual(stay.from, cutoffDate) && isAfterOrEqual(stay.to, cutoffDate)) {
+    if (isAfterOrEqual(stay.from, calcFrom)) {
+      // if the date is in the future, it can be safely ignored
+    } else if (isAfterOrEqual(stay.from, cutoffDate) && isAfterOrEqual(stay.to, cutoffDate)) {
+      // if cuttoffDate is before both the from and to of the stay, add the whole stay
       const daysToAdd = differenceInDays(stay.to, stay.from) + 1;
       totalDays += daysToAdd;
     } else if (isAfterOrEqual(cutoffDate, stay.from) && isBeforeOrEqual(cutoffDate, stay.to)) {

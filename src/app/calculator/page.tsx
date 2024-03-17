@@ -2,12 +2,7 @@
 
 'use client';
 
-import {
-  differenceInDays,
-  isAfter,
-  isBefore,
-  subDays,
-} from 'date-fns';
+import { differenceInDays } from 'date-fns';
 import { PlusCircleIcon } from 'lucide-react';
 import { DateRange } from 'react-day-picker';
 import useLocalStorageState from 'use-local-storage-state';
@@ -16,7 +11,7 @@ import { Stays } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import StayTable from '@/components/StayTable';
 import { Toolbox } from './Toolbox';
-import { sortStays } from '../../lib/helpers';
+import { calcDaysInLastX, sortStays } from '../../lib/helpers';
 
 export default function Calculator() {
   const [stays, setStays] = useLocalStorageState<Stays>('stays');
@@ -72,46 +67,25 @@ export default function Calculator() {
 
     tempStays[id] = tempStay;
 
-    const stayValues = Object.values(stays ?? {});
+    const values = Object.values(tempStays);
+    const allDates = values
+      .filter((stay) => stay.start != null && stay.end != null)
+      .map(
+        (stay) => ({ from: stay.start, to: stay.end } as { from: Date; to: Date }),
+      );
 
-    Object.values(tempStays).forEach((currStay) => {
-      if (currStay.end == null || currStay.start == null) {
-        console.log('NULL START OR END');
-        return;
-      }
+    values.forEach((currStay) => {
+      if (currStay.end == null || currStay.start == null) return;
 
-      let fullOverlaps: Stays = {};
-      // const partialOverlaps: Stays = {};
+      const temp = { ...currStay };
+      temp.daysInLast180 = calcDaysInLastX(
+        currStay.end,
+        allDates,
+        180,
+        currStay.stayId === 'd88ce714-5ad0-4e55-b826-21fb9456ae9c',
+      );
 
-      const date180Ago = subDays(currStay.start, 7);
-
-      stayValues.forEach((otherStay) => {
-        if (
-          otherStay.end == null
-          || otherStay.start == null
-          || currStay.start == null
-          || currStay.end == null
-        ) return;
-        if (otherStay.stayId === currStay.stayId) {
-          fullOverlaps = { ...fullOverlaps, [currStay.stayId]: currStay };
-        }
-      });
-
-      const filteredStays = stayValues.filter((otherStay) => {
-        if (
-          otherStay.end == null
-          || otherStay.start == null
-          || currStay.start == null
-          || currStay.end == null
-        ) return false;
-        if (otherStay.stayId === currStay.stayId) return true;
-        return (
-          isBefore(otherStay.start, currStay.start)
-          && isAfter(otherStay.end, date180Ago)
-        );
-      });
-      const reduced = filteredStays.reduce((pre, cur) => pre + cur.days, 0);
-      tempStays[currStay.stayId].daysInLast180 = reduced;
+      tempStays[currStay.stayId] = { ...temp };
     });
 
     setStays({ ...tempStays });
@@ -125,11 +99,18 @@ export default function Calculator() {
           <PlusCircleIcon className="ml-2" />
         </Button>
         <div className="ml-auto">
-          <Toolbox onDeleteAllStays={onDeleteAllStays} onSortStays={onSortStays} />
+          <Toolbox
+            onDeleteAllStays={onDeleteAllStays}
+            onSortStays={onSortStays}
+          />
         </div>
       </div>
       <div>
-        <StayTable onDateRangeSelected={dateRangeSelected} stays={stays ?? {}} onDeleteStay={onDeleteStay} />
+        <StayTable
+          onDateRangeSelected={dateRangeSelected}
+          stays={stays ?? {}}
+          onDeleteStay={onDeleteStay}
+        />
       </div>
     </div>
   );
