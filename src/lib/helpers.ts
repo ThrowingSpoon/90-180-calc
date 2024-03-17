@@ -116,3 +116,29 @@ export const sortStays = (stays: Stays): Stays => {
 
   return sortedStays;
 };
+
+export const calculateStays = (stays: Stays): Stays => {
+  const tempStays: Stays = stays;
+
+  const values = Object.values(tempStays);
+  const allDates = values
+    .filter((stay) => stay.start != null && stay.end != null)
+    .map(
+      (stay) => ({ from: stay.start, to: stay.end } as { from: Date; to: Date }),
+    );
+
+  values.forEach((currStay) => {
+    if (currStay.end == null || currStay.start == null) return;
+
+    const temp = { ...currStay };
+    temp.daysInLast180 = calcDaysInLastX(
+      currStay.end,
+      allDates,
+      180,
+    );
+
+    tempStays[currStay.stayId] = { ...temp };
+  });
+
+  return (tempStays);
+};

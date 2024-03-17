@@ -10,8 +10,11 @@ import { v4 } from 'uuid';
 import { Stays } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import StayTable from '@/components/StayTable';
+import {
+  calculateStays,
+  sortStays,
+} from '../../lib/helpers';
 import { Toolbox } from './Toolbox';
-import { calcDaysInLastX, sortStays } from '../../lib/helpers';
 
 export default function Calculator() {
   const [stays, setStays] = useLocalStorageState<Stays>('stays');
@@ -36,13 +39,13 @@ export default function Calculator() {
   };
 
   const onSortStays = () => {
-    setStays(sortStays(stays ?? {}));
+    setStays({ ...calculateStays(sortStays(stays ?? {})) });
   };
 
   const onDeleteStay = (id: string) => {
     const tempStays = { ...stays };
     delete tempStays[id];
-    setStays(tempStays);
+    setStays({ ...calculateStays(tempStays) });
   };
 
   const dateRangeSelected = (dateRange: DateRange | undefined, id: string) => {
@@ -67,27 +70,7 @@ export default function Calculator() {
 
     tempStays[id] = tempStay;
 
-    const values = Object.values(tempStays);
-    const allDates = values
-      .filter((stay) => stay.start != null && stay.end != null)
-      .map(
-        (stay) => ({ from: stay.start, to: stay.end } as { from: Date; to: Date }),
-      );
-
-    values.forEach((currStay) => {
-      if (currStay.end == null || currStay.start == null) return;
-
-      const temp = { ...currStay };
-      temp.daysInLast180 = calcDaysInLastX(
-        currStay.end,
-        allDates,
-        180,
-      );
-
-      tempStays[currStay.stayId] = { ...temp };
-    });
-
-    setStays({ ...tempStays });
+    setStays({ ...calculateStays(tempStays) });
   };
 
   return (
