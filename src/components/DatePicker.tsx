@@ -9,12 +9,10 @@ import { DateRange } from 'react-day-picker';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
+import {
+  Dialog, DialogContent, DialogTrigger,
+} from './ui/dialog';
 
 export function DatePickerWithRange({
   className,
@@ -41,8 +39,8 @@ export function DatePickerWithRange({
 
   return (
     <div className={cn('grid gap-2', className)}>
-      <Popover>
-        <PopoverTrigger asChild className={promptClassName}>
+      <Dialog>
+        <DialogTrigger asChild className={promptClassName}>
           <Button
             id="date"
             variant="outline"
@@ -68,8 +66,8 @@ export function DatePickerWithRange({
               <span>{prompt}</span>
             )}
           </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        </DialogTrigger>
+        <DialogContent className="w-auto h-[22rem]">
           <Calendar
             initialFocus
             mode="range"
@@ -78,8 +76,8 @@ export function DatePickerWithRange({
             onSelect={(range) => setDate({ to: range?.to, from: range?.from })}
             numberOfMonths={numberOfMonths}
           />
-        </PopoverContent>
-      </Popover>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
