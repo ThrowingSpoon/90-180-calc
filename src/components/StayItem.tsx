@@ -31,6 +31,7 @@ export default function StayItem({
         <div>
           <div className="flex">
             <DatePickerWithRange
+              id={stay.stayId}
               dateRangeSelected={(dateRange) => onDateRangeSelected(dateRange, stay.stayId)}
               prompt="in/out dates"
               numberOfMonths={1}
@@ -80,7 +81,7 @@ export default function StayItem({
               onDeleteStay(stay.stayId);
             }}
           >
-            <TrashIcon size={15} />
+            <TrashIcon aria-label="delete stay" size={15} />
           </Button>
         </div>
       </div>

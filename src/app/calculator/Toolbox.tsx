@@ -35,7 +35,7 @@ export function Toolbox(props: ToolboxProps) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="icon">
-            <Settings className="absolute size-5" />
+            <Settings aria-label="toolbox" className="absolute size-5" />
             <span className="sr-only">Toolbox</span>
           </Button>
         </DropdownMenuTrigger>

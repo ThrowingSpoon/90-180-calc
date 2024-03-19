@@ -45,7 +45,7 @@ function Nav() {
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon">
-            <MenuIcon className="absolute size-5 rotate-0" />
+            <MenuIcon aria-label="side menu" className="absolute size-5 rotate-0" />
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="w-44">

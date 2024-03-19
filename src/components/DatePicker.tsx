@@ -22,6 +22,7 @@ export function DatePickerWithRange({
   promptClassName,
   start,
   end,
+  id,
 }: {
   className?: string;
   prompt: string,
@@ -30,6 +31,7 @@ export function DatePickerWithRange({
   promptClassName?: string,
   start?: Date,
   end?: Date,
+  id?: string
 }) {
   const [date, setDate] = useState<DateRange>({ from: start, to: end });
 
@@ -42,7 +44,7 @@ export function DatePickerWithRange({
       <Dialog>
         <DialogTrigger asChild className={promptClassName}>
           <Button
-            id="date"
+            id={id ?? 'date'}
             variant="outline"
             className={cn(
               'justify-start text-left font-normal',
