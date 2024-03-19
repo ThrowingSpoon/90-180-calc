@@ -4,7 +4,8 @@ export type Stay = {
   end: Date | undefined;
   days: number;
   daysInLast180: number;
-  error: string;
+  error?: string;
+  overlap?: boolean;
 };
 
 export type Stays = {

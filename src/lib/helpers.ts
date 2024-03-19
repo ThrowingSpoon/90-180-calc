@@ -34,6 +34,22 @@ export const doesOverlap = (aFrom: Date, aTo: Date, bFrom: Date, bTo: Date) => !
   && (isBeforeOrEqual(aTo, bFrom) || isAfterOrEqual(aTo, bTo))
 );
 
+/**
+ *
+ * Checks whether two date ranges overlap, compares a and b, will treat as overlapping
+ * if the start and end dates of the two date ranges supplied are equal
+ *
+ * @param aFrom beginning date of a
+ * @param aTo end date of a
+ * @param bFrom beginning date of b
+ * @param bTo end date of b
+ * @returns true if the dates do overlap, false if not
+ */
+export const doesOverlapIncludeEqual = (aFrom: Date, aTo: Date, bFrom: Date, bTo: Date) => !(
+  (isBefore(aFrom, bFrom) || isAfter(aFrom, bTo))
+  && (isBefore(aTo, bFrom) || isAfter(aTo, bTo))
+);
+
 export const calcDaysInLastX = (
   calcFrom: Date,
   stays: { from: Date, to: Date }[],
@@ -118,8 +134,10 @@ export const sortStays = (stays: Stays): Stays => {
 };
 
 export const calculateStays = (stays: Stays): Stays => {
+  // can hold temp stays by reference
   const tempStays: Stays = stays;
 
+  // filter and map stays so we can easily calc them
   const values = Object.values(tempStays);
   const allDates = values
     .filter((stay) => stay.start != null && stay.end != null)
@@ -130,7 +148,7 @@ export const calculateStays = (stays: Stays): Stays => {
   values.forEach((currStay) => {
     if (currStay.end == null || currStay.start == null) return;
 
-    const temp = { ...currStay };
+    const temp: Stay = { ...currStay, overlap: false };
     temp.daysInLast180 = calcDaysInLastX(
       currStay.end,
       allDates,
@@ -138,6 +156,18 @@ export const calculateStays = (stays: Stays): Stays => {
     );
 
     tempStays[currStay.stayId] = { ...temp };
+
+    // check for overlaps
+    const tempStays2: Stays = { ...tempStays };
+    delete tempStays2[currStay.stayId];
+    Object.values(tempStays2).forEach((stay: Stay) => {
+      if (currStay?.start != null && currStay?.end != null && stay?.start != null && stay?.end != null) {
+        if (doesOverlapIncludeEqual(currStay.start, currStay.end, stay.start, stay.end) === true) {
+          tempStays[currStay.stayId].overlap = true;
+          tempStays[stay.stayId].overlap = true;
+        }
+      }
+    });
   });
 
   return (tempStays);

@@ -9,12 +9,9 @@ import useLocalStorageState from 'use-local-storage-state';
 import { v4 } from 'uuid';
 import { Stays } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import StayTable from '@/components/StayTable';
-import {
-  calculateStays,
-  sortStays,
-} from '../../lib/helpers';
+import { calculateStays, sortStays } from '../../lib/helpers';
 import { Toolbox } from './Toolbox';
+import StayItem from '@/components/StayItem';
 
 export default function Calculator() {
   const [stays, setStays] = useLocalStorageState<Stays>('stays');
@@ -73,6 +70,8 @@ export default function Calculator() {
     setStays({ ...calculateStays(tempStays) });
   };
 
+  const keys = Object.keys(stays ?? {});
+
   return (
     <div>
       <div className="flex flex-1 flex-row mb-3">
@@ -87,12 +86,17 @@ export default function Calculator() {
           />
         </div>
       </div>
-      <div>
-        <StayTable
-          onDateRangeSelected={dateRangeSelected}
-          stays={stays ?? {}}
-          onDeleteStay={onDeleteStay}
-        />
+      <div className="w-full">
+        <div className="w-fit mx-auto flex flex-col divide-y-2 *:py-4 first:*:pt-0 last:*:pb-0">
+          {keys.map((key: string) => (
+            <StayItem
+              key={key}
+              onDateRangeSelected={dateRangeSelected}
+              stay={stays?.[key] ?? undefined}
+              onDeleteStay={onDeleteStay}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
