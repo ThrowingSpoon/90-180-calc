@@ -7,6 +7,7 @@ import { PlusCircleIcon } from 'lucide-react';
 import { DateRange } from 'react-day-picker';
 import useLocalStorageState from 'use-local-storage-state';
 import { v4 } from 'uuid';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Stays } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { calculateStays, sortStays } from '../../lib/helpers';
@@ -87,16 +88,27 @@ export default function Calculator() {
         </div>
       </div>
       <div className="w-full">
-        <div className="w-fit mx-auto flex flex-col divide-y-2 *:py-4 first:*:pt-0 last:*:pb-0">
-          {keys.map((key: string) => (
-            <StayItem
-              key={key}
-              onDateRangeSelected={dateRangeSelected}
-              stay={stays?.[key] ?? undefined}
-              onDeleteStay={onDeleteStay}
-            />
-          ))}
-        </div>
+        <AnimatePresence>
+          <div className="w-fit mx-auto flex flex-col *:my-1.5 first:*:mt-0 last:*:mb-0">
+            {keys.map((key: string) => (
+              <motion.div
+                key={key}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                layout
+                layoutId={key}
+              >
+                <StayItem
+                  onDateRangeSelected={dateRangeSelected}
+                  stay={stays?.[key] ?? undefined}
+                  onDeleteStay={onDeleteStay}
+                />
+              </motion.div>
+
+            ))}
+          </div>
+        </AnimatePresence>
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import { format } from 'date-fns';
 import * as React from 'react';
 import { DateRange } from 'react-day-picker';
 import { useState, useEffect } from 'react';
+import { ClassValue } from 'clsx';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { cn } from '@/lib/utils';
@@ -20,15 +21,17 @@ export function DatePickerWithRange({
   dateRangeSelected,
   numberOfMonths = 1,
   promptClassName,
+  calendarClassName,
   start,
   end,
   id,
 }: {
-  className?: string;
+  className?: ClassValue;
   prompt: string,
   dateRangeSelected: (dateRange: DateRange | undefined) => void,
   numberOfMonths?: number
   promptClassName?: string,
+  calendarClassName?: ClassValue,
   start?: Date,
   end?: Date,
   id?: string
@@ -69,7 +72,7 @@ export function DatePickerWithRange({
             )}
           </Button>
         </DialogTrigger>
-        <DialogContent className="w-auto h-[22rem]">
+        <DialogContent className={cn('w-auto h-[22rem]', calendarClassName)}>
           <Calendar
             initialFocus
             mode="range"
@@ -77,6 +80,7 @@ export function DatePickerWithRange({
             selected={date}
             onSelect={(range) => setDate({ to: range?.to, from: range?.from })}
             numberOfMonths={numberOfMonths}
+            className="mx-auto"
           />
         </DialogContent>
       </Dialog>
