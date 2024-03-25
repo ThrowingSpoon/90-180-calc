@@ -59,7 +59,7 @@ export function Toolbox(props: ToolboxProps) {
           </AlertDialogTrigger>
         </DropdownMenuContent>
       </DropdownMenu>
-      <AlertDialogContent>
+      <AlertDialogContent className="w-11/12">
         <AlertDialogHeader>
           <AlertDialogTitle>Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>

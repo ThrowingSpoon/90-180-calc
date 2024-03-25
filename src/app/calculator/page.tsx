@@ -74,7 +74,7 @@ export default function Calculator() {
 
   return (
     <div>
-      <div className="flex flex-1 flex-row mb-3">
+      <div className="flex flex-1 flex-row mb-3 mx-2">
         <Button onClick={addAStay} className="mr-6" variant="outline">
           Add a stay
           <PlusCircleIcon aria-label="add a stay" className="ml-2" />
