@@ -1,0 +1,26 @@
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entrypoint:
+          to: "websecure"
+          scheme: "https"
+  websecure:
+    address: ":443"
+    asDefault: true
+    http:
+      tls:
+        certresolver: "myresolver"
+
+certificatesResolvers:
+  myresolver:
+    acme:
+      email: test-email@liammartin.co.uk
+      storage: acme.json
+      httpChallenge:
+        entryPoint: web
+
+providers:
+  docker:
+    exposedByDefault: false
