@@ -25,7 +25,7 @@ ENV NEXT_TELEMETRY_DISABLED="1"
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-COPY .env.production.example .env.production
+# COPY .env.production.example .env.production
 RUN npm run build
 
 # 3. Production image, copy all the files and run next
