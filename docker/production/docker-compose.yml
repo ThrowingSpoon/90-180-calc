@@ -1,30 +1,52 @@
 services:
   reverse-proxy:
     image: traefik:v3.3
-    command: --configFile=/etc/traefik/traefik.yml
+    command:
+      - --api.dashboard=true
+      - --log.level=INFO
+      #- --log.filepath=/var/log/traefik.log
+      - --accesslog=true
+      #- --accesslog.filepath=/var/log/traefik-access.log
+      - --providers.docker.network=traefik
+      - --providers.docker.exposedByDefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entryPoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.websecure.address=:443
+      # remove next line when using Traefik v2
+      - --entrypoints.websecure.asDefault=true
+      - --entrypoints.websecure.http.tls.certresolver=myresolver
+      - --certificatesresolvers.myresolver.acme.email=abc@dontspam.co.uk
+      - --certificatesresolvers.myresolver.acme.tlschallenge=true
+      - --certificatesresolvers.myresolver.acme.storage=acme.json
     ports:
       - "80:80"
       - "443:443"
       - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./traefik/traefik.yml:/etc/traefik/traefik.yml
-      - ./traefik/acme.json:/acme.json
+      - ./acme.json:/acme.json
+    labels:
+      - traefik.enable=true
     networks:
       - traefik
 
   with-docker-multi-env-production:
-    container_name: "90180"
+    container_name: "react-app"
     build:
       context: ../../
       dockerfile: docker/production/Dockerfile
     image: with-docker-multi-env-production
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.90180.rule=Host(`liam.ddns.net`)"
-      - "traefik.http.routers.90180.entrypoints=websecure"
-      - "traefik.http.routers.90180.tls=true"
-      - "traefik.http.routers.90180.tls.certresolver=myresolver"
+      - "traefik.http.routers.react-app.rule=Host(`liam.ddns.net`)"
+      - "traefik.http.routers.react-app.entrypoints=websecure"
+      - "traefik.http.routers.react-app.tls=true"
+      - "traefik.http.routers.react-app.tls.certresolver=myresolver"
+      # next lines are optional to redirect www to non-www
+      - traefik.http.middlewares.mywwwredirect.redirectregex.regex=^https://www\.(.*)
+      - traefik.http.middlewares.mywwwredirect.redirectregex.replacement=https://$${1}
+      - traefik.http.routers.react-app.middlewares=mywwwredirect
     networks:
       - traefik
 
